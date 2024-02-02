@@ -18,6 +18,11 @@ namespace WebAPI
             optionsBuilder.UseMySql($"Server={Server};database={DataBaseName};Port={Port};User id={UserName};Password={Password}",new MySqlServerVersion(new Version(8,0,35)));
 
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserEntity>().HasOne(x => x.Role).WithMany().HasForeignKey(x => x.idRole).IsRequired();
+            base.OnModelCreating(modelBuilder);
+        }
         public DbSet<UserEntity> user { get; set; }
         public DbSet<RoleEntity> role { get; set; }
         public DbSet<CategoriaEntity> categoria { get; set; }

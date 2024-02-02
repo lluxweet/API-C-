@@ -1,5 +1,6 @@
 ﻿using LinqToDB.Mapping;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Models
 {
@@ -13,5 +14,7 @@ namespace WebAPI.Models
         public string Otchestvo { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+
+        public RoleEntity Role { get; set; }
     }
 }

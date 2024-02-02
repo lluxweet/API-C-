@@ -1,27 +1,45 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
+using WebAPI.DTO;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
-    [Route("/v1/[controller]")]
+    [Route("/v1/[controller]")]// /v1/User
     public class UserController : ControllerBase
     {     
-        [HttpGet()]
+        [HttpGet()]       
 
         public IActionResult GetAll()
         {        
             using ApplicationContext _context = new ApplicationContext();
-            var list = _context.user.ToList();
+            var list = _context.user
+                .Include(u => u.Role).ToList();
             return Ok(list);
+        }
+
+        [HttpPost("/login")]
+        public IActionResult Login(UserLoginDTO dto)
+        {
+            using ApplicationContext _context = new ApplicationContext();
+            UserEntity? user = _context.user.Include(u => u.Role).FirstOrDefault(x => x.Login.ToLower() == dto.Login.ToLower());
+            if (user == null)
+            {
+                return BadRequest();
+            }
+            if (user.Password != dto.Password)
+            {
+                return BadRequest();
+            }
+            return Ok(user);
         }
 
         [HttpGet("{idUser}")]
         public IActionResult GetById(int idUser) 
         {
             using ApplicationContext _context = new ApplicationContext();
-            var list = _context.user.FirstOrDefault(x => x.idUser == idUser);
+            var list = _context.user.Include(u => u.Role).FirstOrDefault(x => x.idUser == idUser);
             return Ok(list);
         }
 
